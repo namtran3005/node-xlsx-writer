@@ -2,7 +2,7 @@ fs = require('fs')
 temp = require('temp')
 path = require('path')
 async = require('async')
-zipper = require('zipper')
+archiver = require('archiver');
 
 blobs = require('./blobs')
 
@@ -84,7 +84,20 @@ class XlsxWriter
     pack: (cb) ->
         throw Error('Should call prepare() first!') if !@prepared
 
-        zipfile = new zipper.Zipper(@out)
+        zipfile = archiver('zip')
+        
+        output = fs.createWriteStream(@out)
+        
+        output.on('close', ->
+          console.log('archiver has been finalized and the output file descriptor has closed.')
+          cb()
+        )
+
+        zipfile.on('error', ->
+          throw err;
+        )
+
+        zipfile.pipe(output);
 
         async.series [
             (cb) =>
@@ -95,13 +108,15 @@ class XlsxWriter
                 for string in @strings
                     stringTable += blobs.string(@escapeXml(string))
                 fs.writeFile(@_filename('xl', 'sharedStrings.xml'), blobs.stringsHeader(@strings.length) + stringTable + blobs.stringsFooter, cb)
-            (cb) => zipfile.addFile(@_filename('[Content_Types].xml'), '[Content_Types].xml', cb)
-            (cb) => zipfile.addFile(@_filename('_rels', '.rels'), '_rels/.rels', cb)
-            (cb) => zipfile.addFile(@_filename('xl', 'workbook.xml'), 'xl/workbook.xml', cb)
-            (cb) => zipfile.addFile(@_filename('xl', 'styles.xml'), 'xl/styles.xml', cb)
-            (cb) => zipfile.addFile(@_filename('xl', 'sharedStrings.xml'), 'xl/sharedStrings.xml', cb)
-            (cb) => zipfile.addFile(@_filename('xl', '_rels', 'workbook.xml.rels'), 'xl/_rels/workbook.xml.rels', cb)
-            (cb) => zipfile.addFile(@_filename('xl', 'worksheets', 'sheet1.xml'), 'xl/worksheets/sheet1.xml', cb)
+            (cb) => 
+                zipfile.file(@_filename('[Content_Types].xml'), {name : '[Content_Types].xml'})
+                zipfile.file(@_filename('_rels', '.rels'), {name : '_rels/.rels' })
+                zipfile.file(@_filename('xl', 'workbook.xml'), {name : 'xl/workbook.xml' })
+                zipfile.file(@_filename('xl', 'styles.xml'), {name : 'xl/styles.xml' })
+                zipfile.file(@_filename('xl', 'sharedStrings.xml'), {name : 'xl/sharedStrings.xml' })
+                zipfile.file(@_filename('xl', '_rels', 'workbook.xml.rels'), {name : 'xl/_rels/workbook.xml.rels' })
+                zipfile.file(@_filename('xl', 'worksheets', 'sheet1.xml'), {name : 'xl/worksheets/sheet1.xml' })
+                zipfile.finalize()
         ], cb
 
     dimensions: (rows, columns) ->

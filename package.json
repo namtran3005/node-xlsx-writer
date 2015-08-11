@@ -8,10 +8,6 @@
     "email": "ruben@savanne.be",
     "url": "http://savanne.be/"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/rubenv/node-xlsx-writer.git"
-  },
   "bugs": {
     "url": "https://github.com/rubenv/node-xlsx-writer/issues"
   },
@@ -29,16 +25,16 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt-contrib-watch": "~0.3.1",
-    "grunt-contrib-coffee": "~0.6.0",
-    "grunt-contrib-clean": "~0.4.0",
-    "grunt": "~0.4.0",
-    "grunt-mocha-cli": "~1.0.1",
-    "coffee-script": "~1.6.1",
-    "grunt-mkdir": "~0.1.0",
-    "excel": "0.0.3",
-    "underscore": "~1.4.4",
-    "grunt-release": "~0.3.1"
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt": "^0.4.5",
+    "grunt-mocha-cli": "^1.14.0",
+    "coffee-script": "^1.9.3",
+    "grunt-mkdir": "~0.1.2",
+    "excel": "^0.1.1",
+    "underscore": "^1.8.3",
+    "grunt-release": "^0.13.0"
   },
   "keywords": [
     "xlsx",
@@ -46,8 +42,8 @@
     "spreadsheet"
   ],
   "dependencies": {
-    "temp": "~0.5.0",
-    "async": "~0.2.6",
-    "zipper": "~0.3.0"
+    "temp": "^0.8.3",
+    "async": "^1.4.2",
+    "archiver": "^0.14.4"
   }
 }
